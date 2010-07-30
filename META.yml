@@ -1,7 +1,8 @@
 ---
-abstract: 'L<DBIx::Class> plugin for automatically tracking lineage paths in simple data trees (beta software).'
+abstract: 'L<DBIx::Class> plugin for automatically tracking lineage paths in simple data trees.'
 author:
-  - 'Ashley Pond V <ashley.org>'
+  - 'Ashley Pond V · ashley.pond.v@gmail.com · L<http://pangyresoft.com>.'
+  - 'Ashley Pond V <ashley@cpan.org>'
 build_requires:
   DBICx::TestDatabase: 0
   ExtUtils::MakeMaker: 6.42
@@ -9,7 +10,7 @@ build_requires:
 configure_requires:
   ExtUtils::MakeMaker: 6.42
 distribution_type: module
-generated_by: 'Module::Install version 0.91'
+generated_by: 'Module::Install version 0.97'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -21,8 +22,11 @@ no_index:
     - t
     - xt
 requires:
+  DBICx::TestDatabase: 0
   DBIx::Class: 0.081
+  Test::More: 0.42
   parent: 0.2
 resources:
   license: http://dev.perl.org/licenses/
-version: 0.01
+  repository: http://github.com/pangyre/p5-dbicx-materializedpath
+version: 0.02

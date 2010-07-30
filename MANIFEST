@@ -18,8 +18,10 @@ MANIFEST.skip
 META.yml
 README
 t/00.load.t
+t/001-descendants.t
 t/everything.t
 t/lib/TestSchema.pm
 t/lib/TestSchema/TreeData.pm
+t/lib/TestSchema/TreeData2.pm
 xt/pod-coverage.t
 xt/pod.t

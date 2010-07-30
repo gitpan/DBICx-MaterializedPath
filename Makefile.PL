@@ -2,7 +2,7 @@ use inc::Module::Install;
 
 name "DBICx-MaterializedPath";
 all_from "lib/DBICx/MaterializedPath.pm";
-author "Ashley Pond V <ashley@cpan.org>";
+author 'Ashley Pond V <ashley@cpan.org>';
 
 requires "parent" => "0.2";
 requires "DBIx::Class" => "0.081";
@@ -17,6 +17,7 @@ if ( $Module::Install::AUTHOR )
 }
 
 auto_install;
+repository 'http://github.com/pangyre/p5-dbicx-materializedpath';
 WriteAll;
 
 __END__

@@ -4,7 +4,7 @@ use strict;
 use parent "DBIx::Class";
 use Carp;
 
-our $VERSION = "0.01";
+our $VERSION = "0.02";
 our $AUTHORITY = "cpan:ASHLEY";
 
 __PACKAGE__->mk_classdata( parent_column => "parent" );
@@ -58,23 +58,29 @@ sub root_node :method {
 
 # How can order_by get into this mix?
 sub grandchildren {
-    my ( $self, @grandkids ) = @_;
-    my @children;
-    if ( $self->can("children") )
-    {
-        @children = $self->children;
-    }
-    else
-    {
-        my $parent_column = $self->parent_column;
-        @children = $self->result_source->resultset->search({ $parent_column => $self->id });
-    }
+    my $self = shift;
+    
+    my $path_separator = $self->path_separator;
+    my $path_column    = $self->path_column;
+    my $id             = $self->id;
 
-    for my $kid ( @children )
-    {
-        push @grandkids, $kid;
-        push @grandkids, $kid->grandchildren();
-    }
+    # Example: 1/2/3
+    # to find descendants of 1, use LIKE "1/%"
+    # to find descendants of 2, use LIKE "%/2/%"
+    my $like_if_root  = "${id}${path_separator}\%";
+    my $like_not_root = "\%${path_separator}${id}${path_separator}\%";
+
+    my @grandkids = $self->result_source->resultset->search(
+        {
+            -or => [
+                $path_column => { 'like', $like_if_root  },
+                $path_column => { 'like', $like_not_root },
+            ]
+        },
+        {
+            order_by => \"LENGTH($path_column)"
+        },
+    );
     return @grandkids;
 }
 
@@ -132,11 +138,7 @@ __END__
 
 =head1 NAME
 
-DBICx::MaterializedPath - L<DBIx::Class> plugin for automatically tracking lineage paths in simple data trees (beta software).
-
-=head1 VERSION
-
-0.01
+DBICx::MaterializedPath - L<DBIx::Class> plugin for automatically tracking lineage paths in simple data trees.
 
 =head1 SYNOPSIS
 
@@ -169,6 +171,8 @@ In your L<DBIx::Class> add this to your componentsE<ndash>
  __PACKAGE__->max_depth(10);           # default "500"
 
 =head1 DESCRIPTION
+
+Note, this is an experimental package and not sanctioned by the DBIC core devs.
 
 Uses a column of a table with a tree structure to keep track of lineage. An example lineage showing primary key idsE<ndash>
 
@@ -214,7 +218,7 @@ Returns the root object for a given record.
 
 =item grandchildren
 
-Iterates through all children and grandchildren.
+Return all children and grandchildren.
 
 =item node_depth
 
